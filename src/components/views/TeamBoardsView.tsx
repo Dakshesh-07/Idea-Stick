@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { KanbanBoard } from '../KanbanBoard';
 import { useBoard } from '../../contexts/BoardContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { Users } from 'lucide-react';
+import { Users, UserPlus } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export function TeamBoardsView() {
   const { teams } = useBoard();
@@ -56,6 +57,19 @@ export function TeamBoardsView() {
              </select>
            </div>
         </div>
+
+        {selectedTeam && (
+          <button 
+            onClick={() => {
+              navigator.clipboard.writeText(selectedTeam);
+              toast.success("Team Invite Code copied! Send this code to your friends.");
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 font-bold rounded-xl hover:bg-indigo-100 border border-indigo-100 hover:scale-105 active:scale-95 transition-all shadow-sm"
+          >
+            <UserPlus className="w-4 h-4" />
+            Invite Members
+          </button>
+        )}
       </div>
       
       {selectedTeam && <KanbanBoard filter={{ scope: 'team', teamId: selectedTeam }} />}
