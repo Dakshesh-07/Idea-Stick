@@ -1,6 +1,6 @@
 # IdeaStick
 > "Share ideas. Find teammates. Build together."
-
+Check the website out:https://idea-stick.vercel.app/
 ## Overview
 IdeaStick is a collaborative web platform designed for teams and individuals to brainstorm, manage, and refine project concepts seamlessly. Whether you're posting concepts publicly to find new collaborators, organizing your personal sandbox securely, or actively discussing private concepts within a synchronized team environment, IdeaStick provides the structural foundation to turn your raw thoughts into finished products.
 
