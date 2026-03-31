@@ -70,10 +70,11 @@ export function Navbar({ currentView, setCurrentView }: NavbarProps) {
         )}
         
         <div className="flex items-center gap-2 ml-4">
-          <button className="p-2 text-slate-500 hover:bg-indigo-50 rounded-full transition-colors relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-          </button>
+          {user && (
+            <button className="p-2 text-slate-500 hover:bg-indigo-50 rounded-full transition-colors relative">
+              <Bell className="w-5 h-5" />
+            </button>
+          )}
           
           {user ? (
             <div className="group relative">

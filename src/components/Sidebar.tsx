@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, StickyNote as StickyNoteIcon, Users, Settings, Plus, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, StickyNote as StickyNoteIcon, Users, Settings, Plus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn } from '../lib/utils';
 import { ViewState } from '../App';
@@ -65,12 +65,6 @@ export function Sidebar({ currentView, setCurrentView, openTeamModal }: SidebarP
           <Plus className="w-5 h-5" />
           New Team
         </button>
-        <div className="mt-6 border-t border-slate-100 pt-6">
-          <button className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-indigo-600 font-manrope text-sm font-semibold">
-            <HelpCircle className="w-5 h-5" />
-            Help Center
-          </button>
-        </div>
       </div>
     </aside>
   );

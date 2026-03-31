@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { X, Mail, Lock, User, ArrowRight } from 'lucide-react';
 
@@ -12,6 +12,16 @@ export function AuthModal() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isAuthModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isAuthModalOpen]);
 
   if (!isAuthModalOpen) return null;
 
