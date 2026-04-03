@@ -65,9 +65,9 @@ export function StickyNote({ idea, isAdmin, onClick }: StickyNoteProps) {
       onClick={onClick}
       style={{ rotate: `${rotation}deg` }}
       className={cn(
-        "p-6 rounded-2xl shadow-sm cursor-pointer transition-all relative group flex flex-col",
+        "p-6 rounded-2xl shadow-sm cursor-pointer transition-all relative group flex flex-col break-inside-avoid mb-6",
         colorMap[idea.color],
-        idea.status === 'selected' && "ring-4 ring-indigo-500",
+        idea.status === 'selected' && "ring-4 ring-green-500 shadow-lg shadow-green-500/20",
         idea.status === 'rejected' && "opacity-60 grayscale-[0.3]"
       )}
     >

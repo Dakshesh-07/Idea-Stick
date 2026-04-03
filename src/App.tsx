@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BoardProvider, useBoard } from './contexts/BoardContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { IdeaSprout, IdeaModal } from './components/IdeaModal';
@@ -52,7 +53,7 @@ function AppContent() {
   // const hasNoTeams = user && !boardLoading && teams.length === 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-body text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-body text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <Sidebar 
         currentView={currentView} 
         setCurrentView={setCurrentView} 
@@ -100,10 +101,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BoardProvider>
-        <AppContent />
-      </BoardProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BoardProvider>
+          <AppContent />
+        </BoardProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

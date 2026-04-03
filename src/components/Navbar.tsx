@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Bell, LogOut, Link } from 'lucide-react';
+import { Search, Bell, LogOut, Link, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useBoard } from '../contexts/BoardContext';
 import { toast } from 'react-hot-toast';
@@ -14,6 +15,7 @@ interface NavbarProps {
 export function Navbar({ currentView, setCurrentView }: NavbarProps) {
   const { user, logout, openAuthModal } = useAuth();
   const { currentBoard, updateBoard } = useBoard();
+  const { theme, toggleTheme } = useTheme();
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
 
   const inviteMembers = () => {
@@ -23,7 +25,7 @@ export function Navbar({ currentView, setCurrentView }: NavbarProps) {
   };
 
   return (
-    <header className="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+    <header className="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 transition-colors">
       <div className="flex items-center gap-8">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -70,8 +72,15 @@ export function Navbar({ currentView, setCurrentView }: NavbarProps) {
         )}
         
         <div className="flex items-center gap-2 ml-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-full transition-colors"
+            title="Toggle theme"
+          >
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          </button>
           {user && (
-            <button className="p-2 text-slate-500 hover:bg-indigo-50 rounded-full transition-colors relative">
+            <button className="p-2 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-full transition-colors relative">
               <Bell className="w-5 h-5" />
             </button>
           )}

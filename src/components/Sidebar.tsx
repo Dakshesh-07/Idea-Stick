@@ -1,6 +1,7 @@
 import React from 'react';
 import { LayoutDashboard, StickyNote as StickyNoteIcon, Users, Settings, Plus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useBoard } from '../contexts/BoardContext';
 import { cn } from '../lib/utils';
 import { ViewState } from '../App';
 
@@ -12,21 +13,22 @@ interface SidebarProps {
 
 export function Sidebar({ currentView, setCurrentView, openTeamModal }: SidebarProps) {
   const { user, openAuthModal } = useAuth();
+  const { teams } = useBoard();
 
   const handleCreateTeam = () => {
     if (!user) return openAuthModal();
     openTeamModal();
   };
 
-  const navItems = [
+  const navItems: Array<{ id: ViewState; icon: any; label: string }> = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'my-boards', icon: StickyNoteIcon, label: 'My Boards' },
-    { id: 'team-boards', icon: Users, label: 'Team Boards' },
+    ...(teams.length > 0 ? [{ id: 'team-boards' as ViewState, icon: Users, label: 'Team Boards' }] : []),
     { id: 'settings', icon: Settings, label: 'Settings' },
-  ] as const;
+  ];
 
   return (
-    <aside className="h-screen w-64 fixed left-0 top-0 bg-white dark:bg-slate-950 shadow-xl shadow-indigo-900/5 flex flex-col py-6 z-40 border-r border-slate-100">
+    <aside className="h-screen w-64 fixed left-0 top-0 bg-white dark:bg-slate-950 shadow-xl shadow-indigo-900/5 flex flex-col py-6 z-40 border-r border-slate-100 dark:border-slate-800 transition-colors">
       <div className="px-6 mb-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">

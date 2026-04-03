@@ -95,6 +95,8 @@ export function TeamBoardsView() {
     fetchMembers();
   }, [selectedTeam, user]);
 
+  const isMember = selectedTeam ? teams.some(t => t.id === selectedTeam) : false;
+
   if (teams.length === 0) {
     if (!user) {
       return (
@@ -108,10 +110,34 @@ export function TeamBoardsView() {
       );
     }
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-indigo-900/5">
-        <Users className="w-16 h-16 text-indigo-200 mb-6" />
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-200 shadow-sm animate-in fade-in duration-500">
+        <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
+          <Users className="w-10 h-10 text-indigo-300" />
+        </div>
         <h2 className="text-2xl font-headline font-bold text-slate-800 text-center">You aren't in any teams yet</h2>
-        <p className="text-slate-500 text-center mt-2 max-w-sm">Create a team via the sidebar to start collaborating with others securely.</p>
+        <p className="text-slate-500 text-center mt-3 max-w-sm leading-relaxed">
+          Create a new team via the sidebar or ask a teammate for an invite code to start collaborating securely.
+        </p>
+      </div>
+    );
+  }
+
+  if (selectedTeam && !isMember) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-red-100 shadow-xl shadow-red-900/5 animate-in zoom-in-95 duration-300">
+        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
+          <span className="text-4xl text-red-500">🔒</span>
+        </div>
+        <h2 className="text-2xl font-headline font-bold text-slate-800 text-center">Access Denied</h2>
+        <p className="text-slate-500 text-center mt-3 max-w-sm leading-relaxed">
+          You are not a member of this team and do not have permission to view its ideas.
+        </p>
+        <button 
+          onClick={() => setSelectedTeam(teams[0].id)}
+          className="mt-8 px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20"
+        >
+          Return to My Teams
+        </button>
       </div>
     );
   }

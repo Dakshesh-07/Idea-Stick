@@ -37,16 +37,22 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!user) {
+        setIdeas([]);
+        setTeams([]);
+        setBoards([]);
+        setComments([]);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
-        let ideasQuery = supabase.from('ideas').select('*');
-        // In a real app with RLS, Supabase handles filtering.
-        // For our prototype, we fetch all and filter locally, but guarantee public is always fetched.
-        const { data: iData } = await ideasQuery;
+        // Fetch ideas - Supabase RLS will handle filtering based on user role and scope
+        const { data: iData, error: iErr } = await supabase.from('ideas').select('*');
+        if (iErr) throw iErr;
         
         if (iData) {
-          // Filter out private ideas of other users manually to simulate RLS if needed,
-          // but we will do it on the client arrays for flexibility.
           setIdeas(iData.map(i => ({
             id: i.id, boardId: i.board_id, teamId: i.team_id, scope: i.scope || 'public', 
             title: i.title, description: i.description, color: i.color, status: i.status, 
@@ -54,22 +60,25 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
           })));
         }
 
-        // Fetch comments globally
-        const { data: cData } = await supabase.from('comments').select('*');
+        // Fetch comments globally - Supabase RLS will restrict to accessible ideas
+        const { data: cData, error: cErr } = await supabase.from('comments').select('*');
+        if (cErr) throw cErr;
+        
         if (cData) setComments(cData.map(c => ({
           id: c.id, ideaId: c.idea_id, userId: c.user_id, userName: c.user_name, content: c.content, timestamp: c.timestamp
         })));
 
-        if (user) {
-          const { data: tData } = await supabase.from('teams').select('*');
-          if (tData) setTeams(tData.map(t => ({ id: t.id, name: t.name, adminId: t.admin_id })));
+        // Fetch teams where user is a member
+        const { data: tData, error: tErr } = await supabase.from('teams').select('*');
+        if (tErr) throw tErr;
+        
+        if (tData) setTeams(tData.map(t => ({ id: t.id, name: t.name, adminId: t.admin_id })));
 
-          const { data: bData } = await supabase.from('boards').select('*');
-          if (bData) setBoards(bData.map(b => ({ id: b.id, name: b.name, teamId: b.team_id, adminId: b.admin_id, activeDecisionRound: b.active_decision_round })));
-        } else {
-          setTeams([]);
-          setBoards([]);
-        }
+        // Fetch boards for those teams
+        const { data: bData, error: bErr } = await supabase.from('boards').select('*');
+        if (bErr) throw bErr;
+        
+        if (bData) setBoards(bData.map(b => ({ id: b.id, name: b.name, teamId: b.team_id, adminId: b.admin_id, activeDecisionRound: b.active_decision_round })));
 
       } catch (err) {
         console.error("Supabase fetch error:", err);
@@ -100,6 +109,11 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
   }, [currentBoardId, boards]);
 
   const addIdea = async (ideaData: Omit<Idea, 'id'>) => {
+    // If team scope, verify user is a member (additional client-side check)
+    if (ideaData.scope === 'team' && !teams.some(t => t.id === ideaData.teamId)) {
+      throw new Error("Unauthorized: You are not a member of this team.");
+    }
+
     const { data, error } = await supabase.from('ideas').insert({
       board_id: ideaData.boardId,
       team_id: ideaData.teamId,
